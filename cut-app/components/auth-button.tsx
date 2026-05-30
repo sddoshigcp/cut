@@ -5,23 +5,25 @@ import { LogoutButton } from "./logout-button";
 
 export async function AuthButton() {
   const supabase = await createClient();
-
-  // You can also use getUser() which will be slower.
-  const { data } = await supabase.auth.getClaims();
-
-  const user = data?.claims;
+  const { data } = await supabase.auth.getUser();
+  const user = data.user;
 
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <LogoutButton />
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+      <span className="text-sm text-muted-foreground">Signed in as {user.email}</span>
+      <div className="flex flex-wrap gap-2">
+        <Button asChild size="sm" variant="outline">
+          <Link href="/dashboard">Dashboard</Link>
+        </Button>
+        <LogoutButton />
+      </div>
     </div>
   ) : (
     <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
+      <Button asChild size="sm" variant="outline">
         <Link href="/auth/login">Sign in</Link>
       </Button>
-      <Button asChild size="sm" variant={"default"}>
+      <Button asChild size="sm" variant="default">
         <Link href="/auth/sign-up">Sign up</Link>
       </Button>
     </div>
